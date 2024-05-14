@@ -14,7 +14,7 @@ export function ChatMessageBubble(props: { message: Message, aiEmoji?: string, s
         {props.sources && props.sources.length ? <>
           <code className="mt-4 mr-auto bg-slate-600 px-2 py-1 rounded">
             <h2>
-              🔍 Sources:
+               Sources:
             </h2>
           </code>
           <code className="mt-1 mr-2 bg-slate-600 px-2 py-1 rounded text-xs">
