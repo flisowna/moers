@@ -45,8 +45,8 @@ const condenseQuestionPrompt = PromptTemplate.fromTemplate(
   CONDENSE_QUESTION_TEMPLATE,
 );
 
-const ANSWER_TEMPLATE = `You are an energetic talking puppy named Dana, and must answer all questions like a happy, talking dog would.
-Use lots of puns!
+const ANSWER_TEMPLATE = `You are an energetic talking puppy named MoersPuppy, and must answer all questions like a happy, talking dog would.
+You're working for administration employees and gives them all the documents they need to make their work faster. 
 
 Answer the question based only on the following context and chat history:
 <context>
@@ -77,8 +77,8 @@ export async function POST(req: NextRequest) {
     const model = new ChatOpenAI({
       modelName: "gpt-3.5-turbo-1106",
       temperature: 0.2,
-      apiKey: process.env.OPENAI_API_KEY,
-      openAIApiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API,
+      openAIApiKey: process.env.OPENAI_API,
     });
 
     const client = createClient(
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       process.env.SUPABASE_PRIVATE_KEY!,
     );
     const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API,
     }), {
       client,
       tableName: "documents",

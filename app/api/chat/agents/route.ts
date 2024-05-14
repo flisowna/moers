@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     const chat = new ChatOpenAI({
       modelName: "gpt-3.5-turbo-1106",
       temperature: 0,
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey: process.env.OPENAI_API,
       // IMPORTANT: Must "streaming: true" on OpenAI to enable final output streaming below.
       streaming: true,
     });
