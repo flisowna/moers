@@ -7,6 +7,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { HttpResponseOutputParser } from "langchain/output_parsers";
 
+
 export const runtime = "edge";
 
 const formatMessage = (message: VercelChatMessage) => {
@@ -60,6 +61,8 @@ export async function POST(req: NextRequest) {
     const model = new ChatOpenAI({
       temperature: 0.8,
       modelName: "gpt-3.5-turbo-1106",
+      apiKey: process.env.OPENAI_API_KEY,
+      openAIApiKey: process.env.OPENAI_API_KEY,
     });
 
     // const model = new ChatAnthropic({});

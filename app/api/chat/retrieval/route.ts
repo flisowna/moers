@@ -76,13 +76,18 @@ export async function POST(req: NextRequest) {
 
     const model = new ChatOpenAI({
       modelName: "gpt-3.5-turbo-1106",
-      temperature: 0.2    });
+      temperature: 0.2,
+      apiKey: process.env.OPENAI_API_KEY,
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    });
 
     const client = createClient(
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_PRIVATE_KEY!,
     );
-    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
+    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings({
+      apiKey: process.env.OPENAI_API_KEY,
+    }), {
       client,
       tableName: "documents",
       queryName: "match_documents",

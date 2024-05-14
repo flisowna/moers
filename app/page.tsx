@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <ChatWindow
       endpoint="api/chat"
-      titleText="Intranet Moers Suchmachine"
+      titleText="Mores Intranet Chat Bot"
       placeholder="Geben Sie Ihren Suchbegriff ein"
       emptyStateComponent={InfoCard}
     ></ChatWindow>
