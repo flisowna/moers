@@ -48,7 +48,9 @@ export async function POST(req: NextRequest) {
 
     const vectorstore = await SupabaseVectorStore.fromDocuments(
       splitDocuments,
-      new OpenAIEmbeddings(),
+      new OpenAIEmbeddings({
+        apiKey: process.env.OPENAI_API,
+      }),
       {
         client,
         tableName: "documents",

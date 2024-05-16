@@ -64,7 +64,9 @@ export async function POST(req: NextRequest) {
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_PRIVATE_KEY!,
     );
-    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
+    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings({
+      apiKey: process.env.OPENAI_API,
+    }), {
       client,
       tableName: "documents",
       queryName: "match_documents",
