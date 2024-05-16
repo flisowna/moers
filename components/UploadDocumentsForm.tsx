@@ -23,7 +23,12 @@ export function UploadDocumentsForm() {
         try {
           const response = await fetch("/api/retrieval/ingest", {
             method: "POST",
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({
+              text,
+              metadata: {
+                title: file.name,
+              },
+            }),
           });
           if (response.status !== 200) {
             const json = await response.json();

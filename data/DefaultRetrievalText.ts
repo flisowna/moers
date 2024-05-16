@@ -38,7 +38,7 @@ First, set environment variables and install packages required for the guide:
 \`\`\`shell
 > yarn add cheerio
 # Or load env vars in your preferred way:
-> export OPENAI_API_KEY="..."
+> export OPENAI_API="..."
 \`\`\`
 
 ## 1. Loading, Splitting, Storage

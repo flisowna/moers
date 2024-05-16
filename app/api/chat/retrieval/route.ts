@@ -161,6 +161,7 @@ export async function POST(req: NextRequest) {
           return {
             pageContent: doc.pageContent.slice(0, 50) + "...",
             metadata: doc.metadata,
+            title: doc.metadata.title,
           };
         }),
       ),

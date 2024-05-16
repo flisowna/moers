@@ -20,6 +20,7 @@ export function ChatMessageBubble(props: { message: Message, aiEmoji?: string, s
           <code className="mt-1 mr-2 bg-slate-600 px-2 py-1 rounded text-xs">
             {props.sources?.map((source, i) => (
               <div className="mt-2" key={"source:" + i}>
+                <h4 className="text-lg font-semibold">{source.title}</h4>
                 {i + 1}. &quot;{source.pageContent}&quot;{
                   source.metadata?.loc?.lines !== undefined
                     ? <div><br/>Lines {source.metadata?.loc?.lines?.from} to {source.metadata?.loc?.lines?.to}</div>
