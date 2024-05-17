@@ -4,8 +4,48 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+
+import { z } from "zod";
+import { ChatOpenAI } from "@langchain/openai";
 
 export const runtime = "edge";
+
+// const classificationSchema = z.object({
+//   sentiment: z
+//     .enum(["happy", "neutral", "sad"])
+//     .describe("The sentiment of the text"),
+//   aggressiveness: z
+//     .number()
+//     .int()
+//     .min(1)
+//     .max(5)
+//     .describe(
+//       "describes how aggressive the statement is, the higher the number the more aggressive"
+//     ),
+//   language: z
+//     .enum(["spanish", "english", "french", "german", "italian"])
+//     .describe("The language the text is written in"),
+// });
+
+// const taggingPrompt = ChatPromptTemplate.fromTemplate(
+//   `Extract the desired information from the following passage.
+
+// Only extract the properties mentioned in the 'Classification' function.
+
+// Passage:
+// {input}
+// `
+// );
+
+// // LLM
+// const llm = new ChatOpenAI({
+//   temperature: 0,
+//   model: "gpt-3.5-turbo-0125",
+// });
+// const llmWihStructuredOutput = llm.withStructuredOutput(classificationSchema);
+
+// const chain = taggingPrompt.pipe(llmWihStructuredOutput);
 
 // Before running, follow set-up instructions at
 // https://js.langchain.com/docs/modules/indexes/vector_stores/integrations/supabase
@@ -34,6 +74,35 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const classificationSchema = z.object({
+    documentType: z
+      .enum(["ADMINISTRATIVE_CIRCULAR", "SERVICE_AGREEMENT", "UNCLEAR"])
+      .describe("The type of the document (or UNCLEAR)"),
+  });
+
+  const classificationPrompt = ChatPromptTemplate.fromTemplate(
+    `Extract the desired information from the following passage.
+
+Only extract the properties mentioned in the 'Classification' function.
+
+Passage:
+{input}
+`,
+  );
+
+  // LLM
+  const classificationLlm = new ChatOpenAI({
+    temperature: 0,
+    model: "gpt-3.5-turbo-0125",
+    apiKey: process.env.OPENAI_API,
+  });
+  const llmWihStructuredOutput =
+    classificationLlm.withStructuredOutput(classificationSchema);
+
+  const chain = classificationPrompt.pipe(llmWihStructuredOutput);
+
+  const docClass = await chain.invoke({ input: text });
+
   try {
     const client = createClient(
       process.env.SUPABASE_URL!,
@@ -45,9 +114,15 @@ export async function POST(req: NextRequest) {
       chunkOverlap: 20,
     });
 
-    const splitDocuments = await splitter.createDocuments([text], [{
-            title: fileName,
-         }]);
+    const splitDocuments = await splitter.createDocuments(
+      [text],
+      [
+        {
+          title: fileName,
+          ...docClass
+        },
+      ],
+    );
 
     const vectorstore = await SupabaseVectorStore.fromDocuments(
       splitDocuments,
