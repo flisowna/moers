@@ -20,6 +20,7 @@ export const runtime = "edge";
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const text = body.text;
+  const fileName = body.metadata?.title;
 
   if (process.env.NEXT_PUBLIC_DEMO === "true") {
     return NextResponse.json(
@@ -44,7 +45,9 @@ export async function POST(req: NextRequest) {
       chunkOverlap: 20,
     });
 
-    const splitDocuments = await splitter.createDocuments([text]);
+    const splitDocuments = await splitter.createDocuments([text], [{
+            title: fileName,
+         }]);
 
     const vectorstore = await SupabaseVectorStore.fromDocuments(
       splitDocuments,
