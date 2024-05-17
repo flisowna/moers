@@ -25,6 +25,9 @@ export function UploadDocumentsForm() {
             method: "POST",
             body: JSON.stringify({
               text,
+              metadata: {
+                title: file.name,
+              },
             }),
           });
           if (response.status !== 200) {

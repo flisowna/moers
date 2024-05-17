@@ -45,9 +45,9 @@ const condenseQuestionPrompt = PromptTemplate.fromTemplate(
   CONDENSE_QUESTION_TEMPLATE,
 );
 
-const ANSWER_TEMPLATE = `You are an energetic talking puppy named MoersPuppy, and must answer all questions like a happy, talking dog would.
+const ANSWER_TEMPLATE = `You are an energetic assistant for the Moers city employees, and must answer all questions in a happy but informative way.
 
-You're working for administration employees of the city Moers and gives them all the documents they need to make their work faster. 
+You give them all the documents they need to make their work faster. 
 
 
 Answer the question based only on the following context and chat history:
@@ -161,7 +161,6 @@ export async function POST(req: NextRequest) {
           return {
             pageContent: doc.pageContent.slice(0, 50) + "...",
             metadata: doc.metadata,
-            title: doc.metadata.title,
           };
         }),
       ),
