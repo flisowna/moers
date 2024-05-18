@@ -87,13 +87,20 @@ export async function POST(req: NextRequest) {
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_PRIVATE_KEY!,
     );
-    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings({
-      apiKey: process.env.OPENAI_API,
-    }), {
-      client,
-      tableName: "documents",
-      queryName: "match_documents",
-    });
+
+    const { data } = client.storage.from("moers-docs").getPublicUrl("public");
+    const supabaseDocsStorageRootUrl = data.publicUrl;
+
+    const vectorstore = new SupabaseVectorStore(
+      new OpenAIEmbeddings({
+        apiKey: process.env.OPENAI_API,
+      }),
+      {
+        client,
+        tableName: "documents",
+        queryName: "match_documents",
+      },
+    );
 
     /**
      * We use LangChain Expression Language to compose two chains.
@@ -160,7 +167,11 @@ export async function POST(req: NextRequest) {
         documents.map((doc) => {
           return {
             pageContent: doc.pageContent.slice(0, 50) + "...",
-            metadata: doc.metadata,
+            metadata: 
+            {
+              ...doc.metadata,
+              publicDocUrl: `${supabaseDocsStorageRootUrl}/${doc.metadata.title}`
+            }
           };
         }),
       ),
