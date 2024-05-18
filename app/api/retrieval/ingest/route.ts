@@ -109,6 +109,19 @@ Passage:
       process.env.SUPABASE_PRIVATE_KEY!,
     );
 
+    const { data, error } = await client.storage
+      .from("moers-docs")
+      .upload(`public/${fileName}`, text, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: "text/plain",
+      });
+
+    if (error) {
+      console.error("Error uploading file to Supabase:", error);
+      // res.status(500).json({ error: "Failed to upload file to Supabase" });
+    }
+
     const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
       chunkSize: 256,
       chunkOverlap: 20,
@@ -119,7 +132,7 @@ Passage:
       [
         {
           title: fileName,
-          ...docClass
+          ...docClass,
         },
       ],
     );
